@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bo‘limlar</title>
+
+<style>
+  body{
+    margin:0;
+    padding:20px;
+    font-family:Arial;
+    background:#fafafa;
+  }
+
+  .section{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:white;
+    padding:14px;
+    margin:10px 0;
+    border-radius:8px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    font-size:20px;
+  }
+
+  .left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+  }
+
+  .dot{
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    background:#222;
+  }
+
+  .delete{
+    font-size:24px;
+    cursor:pointer;
+    padding:6px;
+  }
+
+  #addBtn{
+    position:fixed;
+    bottom:28px;
+    right:28px;
+    background:#222;
+    color:white;
+    font-size:42px;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,0.25);
+  }
+</style>
+</head>
+
+<body>
+
+<div id="list"></div>
+<div id="addBtn">+</div>
+
+<script>
+  const KEY = "bolimlar_array";
+
+  // Avvalgi formatdan kelgan bo‘lishi mumkin — string son emas, array ishlatamiz
+  let sections = JSON.parse(localStorage.getItem(KEY)) || [1];
+
+  // Render funksiyasi
+  function render() {
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    sections.forEach((num, idx) => {
+      const item = document.createElement("div");
+      item.className = "section";
+
+      item.innerHTML = `
+        <div class="left" onclick="openPage(${num})">
+          <div class="dot"></div>
+          <div>${num}-bo‘lim</div>
+        </div>
+        <div class="delete" onclick="deleteSection(${idx})">🗑️</div>
+      `;
+
+      list.appendChild(item);
+    });
+  }
+
+  // Bo‘limni ochish
+  function openPage(n) {
+    window.location.href = n + ".html";
+  }
+
+  // O‘chirish funksiyasi
+  function deleteSection(index) {
+    if (!confirm("Bu bo‘limni o‘chirasizmi?")) return;
+    sections.splice(index, 1);
+
+    // Qolgan bo‘limlar raqamini qayta tartiblaymiz
+    sections = sections.map((_, i) => i + 1);
+
+    localStorage.setItem(KEY, JSON.stringify(sections));
+    render();
+  }
+
+  // ➕ qo‘shish tugmasi
+  document.getElementById("addBtn").onclick = () => {
+    if (sections.length >= 10) {
+      alert("10 ta bo‘limdan ko‘p qo‘shib bo‘lmaydi!");
+      return;
+    }
+
+    sections.push(sections.length + 1);
+    localStorage.setItem(KEY, JSON.stringify(sections));
+    render();
+  };
+
+  render();
+</script>
+
+</body>
+</html>

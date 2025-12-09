@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Kartochkalar UZ-DE</title>
+
+<style>
+/* 🌙 Tungi rejim */
+.dark body {
+  background: #121212;
+  color: white;
+}
+
+.dark .frame {
+  background: #1e1e1e;
+  border-color: #444;
+}
+
+.dark .card-box {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.dark .btn {
+  background: #444;
+}
+
+.dark .lang-btn {
+  background: #333;
+  color: white;
+}
+
+.dark .lang-btn.active {
+  background: #fff;
+  color: #000;
+}
+
+.dark #translateBtn {
+  background: #333;
+  color: #fff;
+}
+
+.dark .modal-box,
+.dark .translate-inner,
+.dark .list-inner,
+.dark .captcha-inner {
+  background: #1e1e1e;
+  color: white;
+}
+
+.dark input {
+  background: #2b2b2b;
+  color: white;
+  border-color: #555;
+}
+  body {
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:#fafafa;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  .frame {
+    width: 90%;
+    max-width: 700px;
+    background: white;
+    border: 3px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 30px 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    position: relative;
+  }
+
+  .lang-switch {
+    position:absolute;
+    top:10px;
+    left:10px;
+    display:flex;
+    gap:10px;
+  }
+
+  .lang-btn {
+    padding:8px 14px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    background:#ddd;
+  }
+  .lang-btn.active {
+    background:#111;
+    color:white;
+  }
+
+  #translateBtn {
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:#222;
+    color:white;
+    border:none;
+    border-radius:50%;
+    width:55px;
+    height:55px;
+    font-size:26px;
+    cursor:pointer;
+  }
+
+  .card-box {
+    width: 100%;
+    height: 260px;
+    background: white;
+    border-radius: 8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 34px;
+    font-weight: 600;
+    user-select:none;
+    text-align:center;
+    padding:10px;
+  }
+
+  .controls {
+    margin-top:30px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+  }
+
+  .btn {
+    width:70px;
+    height:70px;
+    background:#222;
+    color:white;
+    border:none;
+    border-radius:50%;
+    font-size:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 10px 20px rgba(0,0,0,0.22);
+    transition:transform .15s ease;
+  }
+  .btn:active { transform:scale(0.9); }
+
+  .modal,
+  .list-box,
+  .translate-box,
+  .captcha-box {
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.5);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:99;
+  }
+
+  .modal-box,
+  .translate-inner,
+  .list-inner,
+  .captcha-inner {
+    background:white;
+    padding:20px;
+    width:90%;
+    max-width:400px;
+    border-radius:10px;
+    position: relative;
+  }
+
+  .close-btn {
+    position:absolute;
+    top:8px;
+    right:10px;
+    font-size:26px;
+    background:none;
+    border:none;
+    cursor:pointer;
+  }
+
+  input {
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:1px solid #aaa;
+    border-radius:6px;
+    font-size:16px;
+  }
+
+  .add-btn,
+  .danger-btn,
+  .captcha-btn {
+    margin-top:15px;
+    width:100%;
+    padding:12px;
+    background:#111;
+    color:white;
+    border:none;
+    border-radius:6px;
+    font-size:18px;
+    cursor:pointer;
+  }
+
+  .danger-btn { background:#d40000; }
+</style>
+</head>
+<body>
+<button id="modeBtn" style="
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  padding:10px 16px;
+  background:#222;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+">🌙</button>
+<div class="frame">
+
+  <!-- 🔤 Til tanlash -->
+  <div class="lang-switch">
+    <button class="lang-btn active" id="uzBtn">UZ</button>
+    <button class="lang-btn" id="deBtn">DE</button>
+  </div>
+
+  <!-- 🌐 Tarjima tugmasi -->
+  <button id="translateBtn">🌐</button>
+
+  <div class="card-box" id="wordBox">➡️ Bosib boshlang</div>
+
+  <div class="controls">
+    <button class="btn" id="prevBtn">⬅️</button>
+    <button class="btn" id="repeatBtn">🔄</button>
+    <button class="btn" id="nextBtn">➡️</button>
+    <button class="btn" id="randBtn">🔀</button>
+  </div>
+
+  <div class="controls" style="margin-top:15px;">
+    <button class="btn" id="addBtn">➕</button>
+    <button class="btn" id="listBtn">📄</button>
+  </div>
+
+</div>
+
+<!-- 🌐 Tarjima oynasi -->
+<div class="translate-box" id="transModal">
+  <div class="translate-inner">
+    <button class="close-btn" onclick="transModal.style.display='none'">❌</button>
+    <h2>Tarjima</h2>
+    <div id="transText" style="font-size:24px; margin-top:10px;"></div>
+  </div>
+</div>
+
+<!-- ➕ Qo‘shish -->
+<div class="modal" id="addModal">
+  <div class="modal-box">
+    <button class="close-btn" onclick="addModal.style.display='none'">❌</button>
+    <h3>Yangi so‘z qo‘shish</h3>
+
+    <input type="text" id="uzWord" placeholder="O‘zbekcha">
+    <input type="text" id="deWord" placeholder="Nemischa">
+
+    <button class="add-btn" id="saveWord">Saqlash</button>
+  </div>
+</div>
+
+<!-- 📄 Ro‘yxat -->
+<div class="list-box" id="listModal">
+  <div class="list-inner">
+    <button class="close-btn" onclick="listModal.style.display='none'">❌</button>
+    <h3>Saqlangan so‘zlar</h3>
+    <div id="wordList"></div>
+    <button class="danger-btn" id="deleteAllBtn" style="display:none;">🗑️ Hammasini o‘chirish</button>
+  </div>
+</div>
+
+<!-- 🔢 Captcha -->
+<div class="captcha-box" id="captchaModal">
+  <div class="captcha-inner">
+    <button class="close-btn" onclick="captchaModal.style.display='none'">❌</button>
+    <h3>Tasdiqlang</h3>
+    <p id="captchaQuestion" style="font-size:20px; margin-top:10px;"></p>
+    <input type="number" id="captchaAnswer" placeholder="Javobni kiriting">
+    <button class="captcha-btn" id="captchaOk">Tasdiqlash</button>
+  </div>
+</div>
+
+<script>
+
+/* 🔤 Til rejimi */
+let mode = "UZ";
+
+/* 🔑 HAR BIR SAHIFA UCHUN ALOHIDA LOCALSTORAGE KALITI */
+let EXTRA_KEY = "myWords_8";  // ← boshqa sahifada 2.html bo‘lsa "myWords_2" qil
+
+/* Asosiy so‘zlar */
+let baseWords = [
+  { uz: "Salom!", de: "Hallo!" }
+];
+
+/* Faqat shu sahifaga tegishli qo‘shimcha so‘zlar */
+let extraWords = JSON.parse(localStorage.getItem(EXTRA_KEY) || "[]");
+
+let words = [...baseWords, ...extraWords];
+let index = 0;
+
+/* Matnni ovoz chiqarish */
+function speak(text) {
+  let s = new SpeechSynthesisUtterance(text);
+  s.lang = (mode === "UZ") ? "tr-TR" : "de-DE";
+  speechSynthesis.speak(s);
+}
+
+function showWord() {
+  let w = (mode === "UZ") ? words[index].uz : words[index].de;
+  wordBox.textContent = w;
+  speak(w);
+}
+
+/* 🌐 Tarjima */
+translateBtn.onclick = () => {
+  transText.textContent =
+    (mode === "UZ") ? words[index].de : words[index].uz;
+  transModal.style.display = "flex";
+};
+
+/* Tugmalar */
+nextBtn.onclick = () => { index = (index+1)%words.length; showWord(); };
+prevBtn.onclick = () => { index = (index-1+words.length)%words.length; showWord(); };
+repeatBtn.onclick = () => showWord();
+randBtn.onclick = () => { index = Math.floor(Math.random()*words.length); showWord(); };
+
+/* ➕ Qo‘shish */
+addBtn.onclick = () => {
+  addModal.style.display = "flex";
+  uzWord.value = "";
+  deWord.value = "";
+  saveWord.dataset.edit = "";
+};
+
+saveWord.onclick = () => {
+  let uz = uzWord.value.trim();
+  let de = deWord.value.trim();
+  if (!uz || !de) return;
+
+  let editIndex = saveWord.dataset.edit;
+
+  if (editIndex === "") {
+    extraWords.push({ uz, de });
+  } else {
+    extraWords[editIndex] = { uz, de };
+  }
+
+  localStorage.setItem(EXTRA_KEY, JSON.stringify(extraWords));
+  words = [...baseWords, ...extraWords];
+  addModal.style.display = "none";
+  renderList();
+};
+
+/* 📄 Ro‘yxat */
+listBtn.onclick = () => {
+  renderList();
+  listModal.style.display = "flex";
+};
+
+function renderList() {
+  wordList.innerHTML = extraWords.length
+  ? extraWords.map((x, i) => `
+    <div class="list-item">
+      <b>${x.uz}</b> — ${x.de}
+      <span style="float:right;">
+        <button onclick="editWord(${i})" style="font-size:20px;">🖋️</button>
+        <button onclick="deleteWord(${i})" style="font-size:20px;">🗑️</button>
+      </span>
+    </div>`
+  ).join("")
+  : "<i>Hozircha so‘z yo‘q</i>";
+
+  deleteAllBtn.style.display = extraWords.length ? "block" : "none";
+}
+
+/* 🖋️ Tahrirlash */
+function editWord(i) {
+  addModal.style.display = "flex";
+  uzWord.value = extraWords[i].uz;
+  deWord.value = extraWords[i].de;
+  saveWord.dataset.edit = i;
+}
+
+/* 🗑️ Bitta o‘chirish */
+function deleteWord(i) {
+  extraWords.splice(i, 1);
+  localStorage.setItem(EXTRA_KEY, JSON.stringify(extraWords));
+  words = [...baseWords, ...extraWords];
+  renderList();
+}
+
+/* 🔥 Hammasini o‘chirish — CAPTCHA bilan */
+deleteAllBtn.onclick = () => {
+  generateCaptcha();
+  captchaModal.style.display = "flex";
+};
+
+let correctAnswer = 0;
+function generateCaptcha() {
+  let a = Math.floor(Math.random() * 10 + 1);
+  let b = Math.floor(Math.random() * 10 + 1);
+  correctAnswer = a + b;
+  captchaQuestion.textContent = `Tasdiqlang: ${a} + ${b} = ?`;
+  captchaAnswer.value = "";
+}
+
+/* Captcha OK */
+captchaOk.onclick = () => {
+  let user = Number(captchaAnswer.value);
+  if (user === correctAnswer) {
+    extraWords = [];
+    localStorage.setItem(EXTRA_KEY, "[]");
+    words = [...baseWords];
+    renderList();
+    captchaModal.style.display = "none";
+    listModal.style.display = "none";
+  } else {
+    alert("Noto‘g‘ri javob!");
+  }
+};
+
+/* 🔤 Tilni almashtirish */
+uzBtn.onclick = () => {
+  mode = "UZ";
+  uzBtn.classList.add("active");
+  deBtn.classList.remove("active");
+  showWord();
+};
+
+deBtn.onclick = () => {
+  mode = "DE";
+  deBtn.classList.add("active");
+  uzBtn.classList.remove("active");
+  showWord();
+};
+
+/* 🌙 Tungi rejim */
+let dark = false;
+
+modeBtn.onclick = () => {
+  dark = !dark;
+
+  if (dark) {
+    document.documentElement.classList.add("dark");
+    modeBtn.textContent = "☀️";   // kunduzga o‘tish
+    localStorage.setItem("darkMode", "on");
+  } else {
+    document.documentElement.classList.remove("dark");
+    modeBtn.textContent = "🌙";   // tun rejimi
+    localStorage.setItem("darkMode", "off");
+  }
+};
+
+/* 🔄 Sahifa ochilganda avto yuklash */
+if (localStorage.getItem("darkMode") === "on") {
+  document.documentElement.classList.add("dark");
+  modeBtn.textContent = "☀️";
+  dark = true;
+}
+</script>
+
+</body>
+</html>
